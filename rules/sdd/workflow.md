@@ -16,14 +16,17 @@ For non-trivial feature work, follow this sequence:
 
 2. `/sdd-research`
    - Produces `research.md`.
+   - Uses `spec.md` as the lens: its scope, requirements, and research questions guide what to look for.
    - Inspects the repository and records concrete evidence.
    - Must not plan or implement.
 
 3. `/sdd-refine`
-   - Updates `spec.md` into the refined version.
+   - Updates `spec.md` into the refined version using the info found in `research.md`.
    - Reconciles user intent with repository evidence.
    - Adds or updates the Change Set: Added / Modified / Removed / Unchanged.
    - Must surface conflicts instead of silently changing the intent.
+   - Detects architectural decisions and asks the user which to record as ADRs.
+   - Writes confirmed ADRs to `docs/adr/` (optional at L1+, required at L2).
 
 4. `/sdd-delivery-artifacts`
    - Produces `delivery_artifacts/*.md`.
@@ -105,7 +108,7 @@ Use for security-sensitive, compliance-sensitive, cross-team, API-contract, paym
 Required:
 
 - everything from L1+
-- ADRs where decisions are architectural
+- ADRs produced by `/sdd-refine` for all architectural decisions
 - stricter traceability from `REQ -> FACT -> TASK`
 - explicit security/privacy/rollout review where relevant
 

@@ -52,8 +52,11 @@ If `research.md` is missing, stop and ask the user to run `/sdd-research` first.
 4. Update or clarify EARS requirements
 5. Add or update the Change Set
 6. Surface conflicts between intent and repo reality
-7. Keep unresolved questions as checkboxes
-8. Mark the spec as refined
+7. Detect architectural decisions (see ADR Detection below)
+8. Ask the user which decisions to record as ADRs
+9. Write confirmed ADRs to `docs/adr/`
+10. Keep unresolved questions as checkboxes
+11. Mark the spec as refined
 
 ## Refinement Rules
 
@@ -75,6 +78,84 @@ Use this format:
 ```
 
 If the conflict requires user input, use `AskUserQuestionTool`.
+
+## ADR Detection
+
+After surfacing conflicts, scan for architectural decisions that emerged during reconciliation.
+
+A decision is ADR-worthy if it involves a meaningful tradeoff between alternatives — not a trivial implementation detail.
+
+Signals:
+
+- A conflict required choosing between two approaches
+- A constraint eliminated one option in favour of another
+- A design choice has long-term consequences on the codebase structure
+- A requirement was changed or removed because of repository reality
+
+### Detection Step
+
+List each candidate decision in chat using this format:
+
+```md
+### Candidate ADRs
+
+1. [Short title] — chose X over Y because [brief reason] (linked: REQ-001)
+2. [Short title] — ...
+```
+
+Then use `AskUserQuestionTool` to ask which ones to record. Do not write any ADR file before the user confirms.
+
+If no architectural decisions were detected, skip this step entirely and do not mention it.
+
+### Writing ADRs
+
+For each confirmed decision, write one ADR file to `docs/adr/NNNN-decision-title.md`.
+
+Scan existing files in `docs/adr/` to assign the next sequential number.
+
+If `docs/adr/` does not exist, create it before writing.
+
+Use this format:
+
+```md
+# ADR-NNNN: [Decision Title]
+
+**Date**: YYYY-MM-DD
+**Status**: accepted
+**Requirements**: REQ-XXX, REQ-YYY
+
+## Context
+
+[2-4 sentences: the situation and constraints that forced a decision]
+
+## Decision
+
+[1-2 sentences: what was decided]
+
+## Alternatives Considered
+
+### [Alternative 1]
+- **Why not**: [specific reason rejected]
+
+### [Alternative 2]
+- **Why not**: [specific reason rejected]
+
+## Consequences
+
+### Positive
+- [benefit]
+
+### Negative
+- [trade-off]
+```
+
+After writing each ADR, append a row to `docs/adr/README.md` (create it if missing):
+
+```md
+| [NNNN](NNNN-decision-title.md) | [Title] | accepted | YYYY-MM-DD |
+```
+
+Write one ADR file at a time. Do not batch multiple ADRs in one response.
 
 ## Required Changes to spec.md
 
@@ -148,4 +229,5 @@ After updating `spec.md`, return only:
 - whether conflicts remain
 - number of requirements
 - number of open questions
+- ADRs written (paths), or "no ADRs recorded"
 - next recommended command

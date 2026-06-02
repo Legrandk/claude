@@ -132,11 +132,13 @@ If `devkit rm` is not available, fails, or behaves unexpectedly, stop and ask th
 
 Do not replace it with `docker rm`.
 
-After rebuilding, copy generated files back to the host only when needed:
+After rebuilding, always copy the Gemfile.lock back to the host. This is mandatory, not optional:
 
 ```bash
 docker cp <service_name>:/usr/local/jtservice/Gemfile.lock ./Gemfile.lock
 ```
+
+Do this immediately after `devkit build` completes — before any other step.
 
 Do not run:
 
