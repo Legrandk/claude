@@ -58,9 +58,11 @@ rules/
 └── sdd/          # Spec-Driven Development workflow and artifact rules
 ```
 
-### `settings.json`
+### `settings.json` and `keybindings.json`
 
-Claude Code project configuration — permissions allowlist, model selection, and token limits.
+Claude Code configuration files for project-specific settings:
+- `settings.json` — Permissions allowlist, model selection, token limits, and status line customization
+- `keybindings.json` — Custom keyboard shortcuts for Claude Code chat
 
 ## Installation & Setup
 
@@ -147,21 +149,16 @@ git pull
 cp -r agents/ skills/ rules/ CLAUDE.md ~/.claude/
 ```
 
-### For VS Code Users
+### Optional: Claude Code Settings
 
-If you're using the VS Code extension, you may also want to copy the VS Code-specific files:
+The repository also includes optional Claude Code configuration files:
 
-```bash
-# macOS/Linux
-cp settings.json ~/Library/Application\ Support/Code/User/settings.json
-cp keybindings.json ~/Library/Application\ Support/Code/User/keybindings.json
+- **settings.json** — Claude Code permissions, model selection, status line customization
+- **keybindings.json** — Custom keyboard shortcuts for Claude Code
 
-# Windows
-copy settings.json %APPDATA%\Code\User\settings.json
-copy keybindings.json %APPDATA%\Code\User\keybindings.json
-```
+These are project-specific and typically stay in the repository rather than being installed globally. They configure Claude Code behavior when working on projects (e.g., allowed bash commands, output token limits).
 
-**Note:** This will overwrite your existing VS Code settings. Review the files first and merge manually if you have existing customizations.
+If you want to use these settings as defaults for all projects, you can copy them to your Claude Code configuration directory (location varies by Claude Code version and platform - check Claude Code documentation).
 
 ## Using with Claude Code
 
