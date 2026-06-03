@@ -62,6 +62,152 @@ rules/
 
 Claude Code project configuration — permissions allowlist, model selection, and token limits.
 
+## Installation & Setup
+
+This repository contains Claude Code configuration files (agents, skills, rules, and behavioral constraints) that you install once to use across all your projects.
+
+### Installation
+
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/Legrandk/claude.git
+   cd claude
+   ```
+
+2. Copy the configuration files to your home directory where Claude Code looks for them:
+   ```bash
+   # macOS/Linux
+   mkdir -p ~/.claude
+   cp -r agents/ ~/.claude/
+   cp -r skills/ ~/.claude/
+   cp -r rules/ ~/.claude/
+   cp CLAUDE.md ~/.claude/
+
+   # Windows
+   mkdir %USERPROFILE%\.claude
+   xcopy agents\ %USERPROFILE%\.claude\agents\ /E /I
+   xcopy skills\ %USERPROFILE%\.claude\skills\ /E /I
+   xcopy rules\ %USERPROFILE%\.claude\rules\ /E /I
+   copy CLAUDE.md %USERPROFILE%\.claude\
+   ```
+
+3. Restart Claude Code (web interface or VS Code extension) if it's already running.
+
+### Verification
+
+After installation, open Claude Code in ANY project and test:
+
+1. **Check agents** — Type `@` in chat and you should see:
+   - `@planner`
+   - `@implementer`
+   - `@reviewer`
+   - `@antagonist`
+   - `@tech-lead`
+   - `@tdd-guide`
+
+2. **Check slash commands** — Type `/` in chat and you should see:
+   - `/sdd-start`
+   - `/sdd-research`
+   - `/sdd-refine`
+   - `/execute-plan`
+   - `/deep-spec-review`
+   - And more...
+
+3. **Check CLAUDE.md** — The core behavioral constraints should be active:
+   - Think before coding
+   - Simplicity first
+   - Surgical changes
+   - Goal-driven execution
+
+### Usage
+
+Once installed, these tools are available in every Claude Code session:
+
+```bash
+# Start a new feature with spec-driven development
+/sdd-start doc/playbook/20260603_my_feature
+
+# Ask the planner to create a plan
+@planner Review this spec and create a plan.md
+
+# Execute the plan
+/execute-plan
+
+# Review the changes
+@reviewer Check if implementation matches the plan
+```
+
+### Updating
+
+To update to the latest version:
+
+```bash
+cd claude
+git pull
+cp -r agents/ skills/ rules/ CLAUDE.md ~/.claude/
+```
+
+### For VS Code Users
+
+If you're using the VS Code extension, you may also want to copy the VS Code-specific files:
+
+```bash
+# macOS/Linux
+cp settings.json ~/Library/Application\ Support/Code/User/settings.json
+cp keybindings.json ~/Library/Application\ Support/Code/User/keybindings.json
+
+# Windows
+copy settings.json %APPDATA%\Code\User\settings.json
+copy keybindings.json %APPDATA%\Code\User\keybindings.json
+```
+
+**Note:** This will overwrite your existing VS Code settings. Review the files first and merge manually if you have existing customizations.
+
+## Using with Claude Code
+
+### Invoking Agents
+
+To use a specific agent, type `@agent-name` in Claude Code chat:
+
+```
+@planner Convert this requirement into a plan.md
+```
+
+Available agents:
+- `@planner` — Creates a deterministic plan from a task/spec
+- `@implementer` — Executes the plan with minimal changes
+- `@reviewer` — Reviews code against plan, spec, and artifacts
+- `@antagonist` — Adversarial pre-PR review for risks and blockers
+- `@tech-lead` — Research and planning (read-only, no code changes)
+- `@tdd-guide` — Enforces test-first workflow
+
+### Using Slash Commands
+
+Slash commands orchestrate multi-step workflows. Type `/` in Claude Code to see available commands:
+
+```
+/sdd-start                    # Start a new feature with intent-level spec
+/sdd-research                 # Research the repository
+/sdd-refine                   # Refine spec with research findings
+/sdd-delivery-artifacts       # Map feature requirements
+/sdd-facts                    # Create verifiable assertions
+/execute-plan                 # Drive tasks to completion
+/deep-spec-review             # Parallel specialist reviewers
+/architecture-decision-records # Capture ADRs
+/spec-review                  # Lightweight spec review
+```
+
+### Core Behavioral Constraints
+
+When you use Claude Code in this workspace, `CLAUDE.md` automatically loads four core principles:
+
+1. **Think before coding** — state assumptions, surface ambiguities
+2. **Simplicity first** — minimum code that solves the problem
+3. **Surgical changes** — touch only what's necessary
+4. **Goal-driven execution** — define success criteria and verify
+
+Domain-specific rules from `rules/` (Rails, Terraform, testing, security, etc.) are loaded on demand based on your project context.
+
 ## How it works
 
 There are two main operating modes.
