@@ -127,6 +127,21 @@ For risky changes, explicitly challenge:
 - recovery path
 - blast radius
 
+## New Project Review Checks
+
+When the work is under `doc/new-project/<project>/`, check:
+
+- Does the scaffold satisfy `project_brief.md`?
+- Do implemented behaviors map to `requirements.md`?
+- Were architecture decisions in `architecture.md` followed?
+- Are major architecture decisions captured as ADRs or explicitly approved?
+- Are delivery artifacts marked complete only when produced?
+- Are facts marked `@implemented` only when executable checks exist and passed?
+- Did tasks respect `Files To Create`, `Files To Modify`, and `Files That Must Already Exist`?
+- Is the first vertical slice actually runnable?
+- Are validation commands defined and usable by future contributors?
+- Is the project ready to switch to normal SDD for future feature work?
+
 ## Output
 
 Return only this structure:

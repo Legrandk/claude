@@ -17,3 +17,18 @@ You are a senior code reviewer. When invoked:
    - No generic theory
 
 Include specific examples of how to fix each issue.
+
+## New Project Review
+
+When reviewing work under `doc/new-project/<project>/`, also check:
+
+- implementation matches `project_brief.md`
+- requirements and constraints from `requirements.md` are satisfied or explicitly deferred
+- architecture choices in `architecture.md` were followed
+- completed delivery artifact checkboxes correspond to produced files or behavior
+- facts marked `@implemented` have executable checks that exist and passed
+- completed plan tasks stayed within `Files To Create`, `Files To Modify`, and `Files That Must Already Exist`
+- missing files listed under `Files To Create` were created when required
+- missing files listed under `Files That Must Already Exist` were not ignored
+- the first vertical slice is actually runnable if the plan required one
+- future feature work can move to normal SDD under `doc/playbook/<feature>/`

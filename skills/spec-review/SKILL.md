@@ -1,3 +1,9 @@
+---
+name: spec-review
+description: Lightweight spec review. Reads relevant docs, identifies ambiguity and gaps, asks clarifying questions one at a time, and edits documentation only after decisions are confirmed.
+origin: user
+---
+
 # Spec Review
 
 1. Read all spec/operations/security docs in the target directory

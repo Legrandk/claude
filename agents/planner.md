@@ -1,3 +1,10 @@
+---
+name: planner
+description: Converts approved SDD or new-project inputs into a deterministic implementation plan. Use after the required spec/research or new-project artifacts exist.
+model: sonnet
+tools: Read, Glob, Grep, Bash, Write
+---
+
 # Planner SDD Addition
 
 Add this section to `agents/planner.md`.
@@ -106,3 +113,115 @@ Validation:
 - Run linter.
 ```
 
+## New Project Planning
+
+When planning work under `doc/new-project/<project>/`, follow:
+
+- `rules/new-project/workflow.md`
+- `rules/common/output-budget.md`
+
+New-project planning is for brand-new projects started from source documents.
+
+Do not treat it as existing-project SDD work.
+Do not require repository evidence from `research.md`.
+Do not use SDD Change Set assumptions such as Added / Modified / Removed / Unchanged.
+
+## New Project Planning Inputs
+
+When the requested work is under `doc/new-project/<project>/`, you MUST read before planning:
+
+- `doc/new-project/<project>/project_brief.md`
+- `doc/new-project/<project>/requirements.md`
+- `doc/new-project/<project>/architecture.md`
+- every markdown file under `doc/new-project/<project>/delivery_artifacts/`
+- every markdown file under `doc/new-project/<project>/facts/`
+- any ADR explicitly referenced by the architecture or delivery artifacts
+- relevant repository rules from `rules/`
+
+If `requirements.md` is missing, stop and ask the user to run `/new-project-research` first.
+
+If `architecture.md` is missing, stop and ask the user to run `/new-project-architecture` first.
+
+If `delivery_artifacts/` is missing or contains no markdown files, stop and ask the user to run `/new-project-delivery-artifacts` first.
+
+If `facts/` is missing or contains no markdown files, stop and ask the user to run `/new-project-facts` first.
+
+Use:
+
+- `project_brief.md` as the intent and scope source of truth
+- `requirements.md` as the behavior and constraint source of truth
+- `architecture.md` as the foundation decision source of truth
+- `delivery_artifacts/` as the production-scope source of truth
+- `facts/` as the executable-verification source of truth
+
+## New Project Plan Shape
+
+Create:
+
+```text
+doc/new-project/<project>/
+  plan.md
+  plan/
+    t1.md
+    t2.md
+    t3.md
+```
+
+`plan.md` must stay compact.
+
+Every executable task listed in `plan.md` must have a matching child task file under `plan/`.
+
+The first executable task should establish the smallest runnable foundation.
+
+The plan should include a first vertical slice unless the user explicitly asks for scaffold-only work.
+
+## New Project Task File Contract
+
+Each `plan/tN.md` file must include:
+
+- task id and title
+- objective
+- delivery artifact coverage
+- fact coverage
+- traceability
+- files to create
+- files to modify
+- files that must already exist
+- files not allowed to change
+- exact implementation steps
+- tests to add or update
+- validation commands
+- completion criteria
+- rollback or reset notes
+- out-of-scope changes
+
+Use these sections exactly:
+
+```md
+## Files To Create
+
+## Files To Modify
+
+## Files That Must Already Exist
+```
+
+A missing file under `Files To Create` is expected.
+
+A missing file under `Files That Must Already Exist` is drift and must be reported instead of improvised around.
+
+## New Project Traceability
+
+For each task, reference at least one of:
+
+- requirement id from `requirements.md`
+- constraint id from `requirements.md`
+- fact id from `facts/*.md`
+- delivery artifact from `delivery_artifacts/*.md`
+- architecture section
+- ADR
+
+Use lightweight traceability:
+
+```txt
+REQ/CON/NFR -> FACT -> TASK
+```

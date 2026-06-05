@@ -168,6 +168,25 @@ Before execution, if the plan lives under `doc/playbook/<feature>/`:
 - Verify every unchecked task points to a task file or contains explicit file scope
 - Refuse to execute if the plan requires architectural decisions not captured in an ADR or explicitly approved in the plan
 
+## New Project Guardrails
+
+Before execution, if the plan lives under `doc/new-project/<project>/`:
+
+- Verify `project_brief.md` exists
+- Verify `requirements.md` exists
+- Verify `architecture.md` exists
+- Verify `delivery_artifacts/` contains at least one markdown file
+- Verify `facts/` contains at least one markdown file
+- Verify every unchecked task points to a task file
+- Verify each task file distinguishes:
+  - `Files To Create`
+  - `Files To Modify`
+  - `Files That Must Already Exist`
+- Treat missing files under `Files To Create` as expected
+- Treat missing files under `Files That Must Already Exist` as drift
+- Use validation commands from the task file, `architecture.md`, or applicable project rules
+- Refuse to execute if unresolved architecture decisions block scaffold or first-slice work
+
 ## Done Criteria
 
 A task is done only when:
