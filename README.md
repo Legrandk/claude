@@ -1,267 +1,213 @@
-# Claude Code Configuration
+# AI Coding Assistant Configuration
 
-A set of agents, skills, and rules for disciplined AI-assisted development with [Claude Code](https://claude.ai/code).
+Shared agents, skills, rules, and behavioral constraints for disciplined AI-assisted development with Claude Code and OpenAI Codex.
 
-## What's in here
+The repository keeps tool-agnostic behavior in `CORE.md`, then adapts it to each assistant through lightweight tool-specific files.
 
-### `CLAUDE.md`
+## What Is Included
 
-The main instruction file loaded by Claude Code in every session.
+### Shared Core
 
-It should stay small and define only the core behavioural constraints:
+- `CORE.md` — tool-agnostic behavioral constraints:
+  - Think before coding.
+  - Simplicity first.
+  - Surgical changes.
+  - Goal-driven execution.
+- `agents/` — source agent definitions.
+- `skills/` — reusable workflow skills.
+- `rules/` — standards and workflow rules loaded on demand.
+- `commands/` — command-style prompts.
 
-- Think before coding — state assumptions explicitly and surface ambiguities.
-- Simplicity first — write the minimum code that solves the problem.
-- Surgical changes — touch only what the task requires.
-- Goal-driven execution — define success criteria and verify results.
+### Claude Code Files
 
-Workflow-specific guidance should live in `rules/` and `skills/`, not directly in `CLAUDE.md`.
+- `CLAUDE.md` — Claude Code wrapper that points to `CORE.md`.
+- `claude-code/settings.json` — Claude Code permissions, model, token, and status-line settings.
+- `claude-code/keybindings.json` — Claude Code chat keybindings.
 
-### `agents/`
+### OpenAI Codex Files
 
-Custom subagent definitions. Each agent has a narrow, well-defined role:
+- `AGENTS.md` — repository-level Codex wrapper that points to `CORE.md`.
+- `codex/AGENTS.md` — Codex wrapper that points to `CORE.md`.
+- `codex/config.toml` — minimal Codex config fragment.
+- `scripts/generate-codex-agents.sh` — generates Codex custom-agent TOML from `agents/*.md` during install.
+- `codex/prompts/*.md` — legacy custom prompt wrappers for command-like entrypoints.
 
-| Agent | Role |
-|-------|------|
-| `planner` | Converts an approved task/spec into a deterministic `plan.md` |
-| `implementer` | Executes an approved `plan.md` with minimal changes |
-| `reviewer` | Reviews code changes against the plan, spec, and delivery artifacts |
-| `antagonist` | Adversarial pre-PR reviewer: looks for blockers, hidden risks, weak validation, unsafe rollout, and scope creep |
-| `tdd-guide` | Enforces test-first workflow: red → green → refactor |
-| `tech-lead` | Research and planning only — never modifies code |
+## Install For Claude Code
 
-### `skills/`
-
-Slash commands that orchestrate multi-step workflows:
-
-| Skill | Command | What it does |
-|-------|---------|--------------|
-| `sdd-start` | `/sdd-start` | Creates an intent-level `spec.md` v0 from a rough requirement, using `AskUserQuestionTool` to resolve blocking ambiguities |
-| `sdd-research` | `/sdd-research` | Inspects the repository against `spec.md` and writes `research.md` with concrete code evidence |
-| `sdd-refine` | `/sdd-refine` | Refines `spec.md` using `research.md`, producing the planning-ready version |
-| `sdd-delivery-artifacts` | `/sdd-delivery-artifacts` | Creates `delivery_artifacts/*.md`, a feature-specific map of what must be produced or modified |
-| `sdd-facts` | `/sdd-facts` | Creates `facts/*.md`, executable or verifiable assertions that prove important requirements |
-| `execute-plan` | `/execute-plan` | Reads `plan.md` and drives every task to completion using a TDD loop, parallelizing disjoint tasks when safe |
-| `deep-spec-review` | `/deep-spec-review` | Runs specialist reviewers in parallel — security, cost, compliance, ops, architecture — and conducts structured Q&A before edits |
-| `architecture-decision-records` | `/architecture-decision-records` | Captures architectural decisions as structured ADR documents in `docs/adr/` |
-| `spec-review` | `/spec-review` | Lightweight spec review |
-
-### `rules/`
-
-Domain-specific standards and workflow rules loaded on demand:
-
-```text
-rules/
-├── common/       # Coding style, testing, security, patterns, hooks, devkit, jt-linter
-├── rails/        # Rails-specific style, testing, security, patterns, hooks
-├── terraform/    # Terraform, DynamoDB, IAM and infrastructure rules
-└── sdd/          # Spec-Driven Development workflow and artifact rules
-```
-
-### `settings.json` and `keybindings.json`
-
-Claude Code configuration files for project-specific settings:
-- `settings.json` — Permissions allowlist, model selection, token limits, and status line customization
-- `keybindings.json` — Custom keyboard shortcuts for Claude Code chat
-
-## Installation & Setup
-
-This repository contains Claude Code configuration files (agents, skills, rules, and behavioral constraints) that you install once to use across all your projects.
-
-### Installation
-
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/Legrandk/claude.git
-   cd claude
-   ```
-
-2. Copy the configuration files to your home directory where Claude Code looks for them:
-   ```bash
-   # macOS/Linux
-   mkdir -p ~/.claude
-   cp -r agents/ ~/.claude/
-   cp -r skills/ ~/.claude/
-   cp -r rules/ ~/.claude/
-   cp CLAUDE.md ~/.claude/
-
-   # Windows
-   mkdir %USERPROFILE%\.claude
-   xcopy agents\ %USERPROFILE%\.claude\agents\ /E /I
-   xcopy skills\ %USERPROFILE%\.claude\skills\ /E /I
-   xcopy rules\ %USERPROFILE%\.claude\rules\ /E /I
-   copy CLAUDE.md %USERPROFILE%\.claude\
-   ```
-
-3. Restart Claude Code (web interface or VS Code extension) if it's already running.
-
-### Verification
-
-After installation, open Claude Code in ANY project and test:
-
-1. **Check agents** — Type `@` in chat and you should see:
-   - `@planner`
-   - `@implementer`
-   - `@reviewer`
-   - `@antagonist`
-   - `@tech-lead`
-   - `@tdd-guide`
-
-2. **Check slash commands** — Type `/` in chat and you should see:
-   - `/sdd-start`
-   - `/sdd-research`
-   - `/sdd-refine`
-   - `/execute-plan`
-   - `/deep-spec-review`
-   - And more...
-
-3. **Check CLAUDE.md** — The core behavioral constraints should be active:
-   - Think before coding
-   - Simplicity first
-   - Surgical changes
-   - Goal-driven execution
-
-### Usage
-
-Once installed, these tools are available in every Claude Code session:
+Run one command from the repository root:
 
 ```bash
-# Start a new feature with spec-driven development
+./scripts/install-claude-code.sh
+```
+
+The installer copies files into `~/.claude` by default:
+
+```text
+~/.claude/
+├── CLAUDE.md
+├── CORE.md
+├── agents/
+├── skills/
+├── rules/
+├── commands/
+├── settings.json
+└── keybindings.json
+```
+
+Set `CLAUDE_HOME` to install somewhere else:
+
+```bash
+CLAUDE_HOME=/path/to/.claude ./scripts/install-claude-code.sh
+```
+
+### Verify Claude Code
+
+After installation, restart Claude Code and check:
+
+- Type `@` and confirm agents such as `@planner`, `@implementer`, `@reviewer`, `@antagonist`, `@tech-lead`, and `@tdd-guide` are available.
+- Type `/` and confirm workflow commands such as `/sdd-start`, `/sdd-research`, `/sdd-refine`, and `/execute-plan` are available.
+- Confirm the shared constraints from `CORE.md` are active.
+
+## Install For OpenAI Codex
+
+Run one command from the repository root:
+
+```bash
+./scripts/install-codex.sh
+```
+
+The installer copies Codex files into `~/.codex` and shared skills/rules into `~/.agents`:
+
+```text
+~/.codex/
+├── AGENTS.md
+├── CORE.md
+├── agents/
+│   ├── planner.toml
+│   ├── implementer.toml
+│   └── ...
+├── prompts/
+└── config.toml
+
+~/.agents/
+├── agents/
+├── skills/
+├── rules/
+└── commands/
+```
+
+If `~/.codex/config.toml` already exists, the installer leaves it unchanged and writes `~/.codex/config.claude-shared.example.toml` for review. All other Codex assets are still installed.
+
+Set `CODEX_HOME` or `AGENTS_HOME` to install somewhere else:
+
+```bash
+CODEX_HOME=/path/to/.codex AGENTS_HOME=/path/to/.agents ./scripts/install-codex.sh
+```
+
+### Verify Codex
+
+After installation, restart Codex and check:
+
+- Run `/skills` or type `$` and confirm skills such as `$sdd-start`, `$sdd-research`, `$sdd-refine`, and `$execute-plan` are available.
+- Ask Codex to spawn a custom agent, for example: `Spawn the planner agent to review this spec`.
+- Type `/` and look for prompt wrappers such as `/prompts:sdd-start` where custom prompts are enabled.
+- Confirm `~/.codex/AGENTS.md`, `~/.codex/agents/planner.toml`, and `$HOME/.agents/skills/execute-plan/SKILL.md` exist.
+
+## Install Both Tools
+
+Run both installers:
+
+```bash
+./scripts/install-claude-code.sh
+./scripts/install-codex.sh
+```
+
+Both tools use the same `CORE.md`, `agents/`, `skills/`, `rules/`, and `commands/` source files.
+
+## Feature Differences
+
+| Capability | Claude Code | OpenAI Codex |
+|------------|-------------|--------------|
+| Core instructions | `CLAUDE.md` references `CORE.md` | `AGENTS.md` references `CORE.md` |
+| Settings | JSON files under `~/.claude` | TOML config under `~/.codex/config.toml` |
+| Agents | Invoked with `@agent-name` | Custom subagents in `~/.codex/agents/*.toml`; ask Codex to spawn them explicitly |
+| Skills | Installed under `~/.claude/skills` | Installed under `$HOME/.agents/skills` |
+| Commands | Claude slash commands | Codex skills via `/skills` or `$skill`; prompt wrappers under `~/.codex/prompts` where supported |
+| Rules in this repo | Markdown workflow rules | Markdown workflow rules installed under `$HOME/.agents/rules`; Codex `.rules` command policies are separate |
+
+Codex custom prompts are a compatibility bridge. Prefer Codex skills for reusable workflows when possible.
+
+## Updating
+
+Pull the latest repository changes and rerun the installer for the tool you use:
+
+```bash
+git pull
+./scripts/install-claude-code.sh
+# or
+./scripts/install-codex.sh
+```
+
+Existing files are never silently overwritten. When an installer replaces a changed file, it first creates a timestamped backup next to the original, such as `settings.json.bak.20260605123045`. Directory installs use the same per-file backup behavior.
+
+## Usage
+
+### Claude Code
+
+```text
 /sdd-start doc/playbook/20260603_my_feature
-
-# Ask the planner to create a plan
 @planner Review this spec and create a plan.md
-
-# Execute the plan
 /execute-plan
-
-# Review the changes
 @reviewer Check if implementation matches the plan
 ```
 
-### Updating
-
-To update to the latest version:
-
-```bash
-cd claude
-git pull
-cp -r agents/ skills/ rules/ CLAUDE.md ~/.claude/
-```
-
-### Optional: Claude Code Settings
-
-The repository also includes optional Claude Code configuration files:
-
-- **settings.json** — Claude Code permissions, model selection, status line customization
-- **keybindings.json** — Custom keyboard shortcuts for Claude Code
-
-These are project-specific and typically stay in the repository rather than being installed globally. They configure Claude Code behavior when working on projects (e.g., allowed bash commands, output token limits).
-
-If you want to use these settings as defaults for all projects, you can copy them to your Claude Code configuration directory (location varies by Claude Code version and platform - check Claude Code documentation).
-
-## Using with Claude Code
-
-### Invoking Agents
-
-To use a specific agent, type `@agent-name` in Claude Code chat:
-
-```
-@planner Convert this requirement into a plan.md
-```
-
-Available agents:
-- `@planner` — Creates a deterministic plan from a task/spec
-- `@implementer` — Executes the plan with minimal changes
-- `@reviewer` — Reviews code against plan, spec, and artifacts
-- `@antagonist` — Adversarial pre-PR review for risks and blockers
-- `@tech-lead` — Research and planning (read-only, no code changes)
-- `@tdd-guide` — Enforces test-first workflow
-
-### Using Slash Commands
-
-Slash commands orchestrate multi-step workflows. Type `/` in Claude Code to see available commands:
-
-```
-/sdd-start                    # Start a new feature with intent-level spec
-/sdd-research                 # Research the repository
-/sdd-refine                   # Refine spec with research findings
-/sdd-delivery-artifacts       # Map feature requirements
-/sdd-facts                    # Create verifiable assertions
-/execute-plan                 # Drive tasks to completion
-/deep-spec-review             # Parallel specialist reviewers
-/architecture-decision-records # Capture ADRs
-/spec-review                  # Lightweight spec review
-```
-
-### Core Behavioral Constraints
-
-When you use Claude Code in this workspace, `CLAUDE.md` automatically loads four core principles:
-
-1. **Think before coding** — state assumptions, surface ambiguities
-2. **Simplicity first** — minimum code that solves the problem
-3. **Surgical changes** — touch only what's necessary
-4. **Goal-driven execution** — define success criteria and verify
-
-Domain-specific rules from `rules/` (Rails, Terraform, testing, security, etc.) are loaded on demand based on your project context.
-
-## How it works
-
-There are two main operating modes.
-
-### Lightweight mode
-
-Use this for trivial or mechanical work:
-
-1. **Plan** — invoke the `planner` agent with a task description.
-2. **Execute** — run `/execute-plan`.
-3. **Review** — invoke the `reviewer` agent.
-
-This mode is appropriate for:
-
-- typo fixes
-- small copy changes
-- obvious one-line configuration changes
-- mechanical renames with no behavioural impact
-
-### Spec-Driven Development mode
-
-Use SDD for non-trivial feature work, ambiguous requirements, behaviour changes, API changes, background jobs, observability changes, infrastructure changes, or anything where implementation should not start from a vague prompt.
-
-The SDD workflow is:
+### OpenAI Codex
 
 ```text
-/sdd-start
-  → spec.md v0
-
-/sdd-research
-  → research.md
-
-/sdd-refine
-  → spec.md v1
-
-/sdd-delivery-artifacts
-  → delivery_artifacts/*.md
-
-/sdd-facts
-  → facts/*.md
-
-planner
-  → plan.md + plan/tN.md
-
-/execute-plan
-  → code changes + validation + tracking updates
-
-reviewer
-  → final review against spec, research, delivery artifacts, facts, and plan
-
-antagonist
-  → adversarial pre-PR review for blockers, hidden risk, weak validation, unsafe rollout, and scope creep
+$sdd-start doc/playbook/20260603_my_feature
+Spawn the planner agent to review this spec and create a plan.md.
+$execute-plan doc/playbook/20260603_my_feature
+Spawn the reviewer agent to check if implementation matches the plan.
 ```
 
-The goal is to avoid jumping from a rough requirement directly into implementation.
+If custom prompts are enabled in your Codex surface, the prompt wrappers are also available as `/prompts:<name>`.
 
-## How to use SDD
+## Spec-Driven Development Workflow
+
+Use SDD for non-trivial feature work, ambiguous requirements, behavior changes, API changes, background jobs, observability changes, infrastructure changes, or anything where implementation should not start from a vague prompt.
+
+The workflow is:
+
+```text
+sdd-start
+  -> spec.md v0
+
+sdd-research
+  -> research.md
+
+sdd-refine
+  -> spec.md v1
+
+sdd-delivery-artifacts
+  -> delivery_artifacts/*.md
+
+sdd-facts
+  -> facts/*.md
+
+planner
+  -> plan.md + plan/tN.md
+
+execute-plan
+  -> code changes + validation + tracking updates
+
+reviewer
+  -> final review against spec, research, delivery artifacts, facts, and plan
+
+antagonist
+  -> adversarial pre-PR review for blockers, hidden risk, weak validation, unsafe rollout, and scope creep
+```
+
+### 1. Start From Intent
 
 Create a playbook directory for the feature:
 
@@ -269,172 +215,37 @@ Create a playbook directory for the feature:
 doc/playbook/<YYYYMMDD>_<feature_slug>/
 ```
 
-Example:
+Run `sdd-start` with the playbook path. This creates `spec.md`, an intent-level spec describing the problem, goal, non-goals, desired behavior, requirements, acceptance scenarios, observability expectations, compatibility concerns, and research questions.
 
-```text
-doc/playbook/20260519_provider_output_observability/
-```
+At this stage, the spec must not claim facts about the current codebase unless the user explicitly provided them. Unknown current behavior should be marked for discovery during `sdd-research`.
 
-### 1. Start from intent
+### 2. Research The Repository
 
-Run:
+Run `sdd-research` with the playbook path. This creates `research.md`, the source of truth for repository evidence: relevant files, current flows, existing tests, contracts, operational surfaces, risks, unknowns, and planning inputs.
 
-```text
-/sdd-start doc/playbook/<feature>
-```
+Research must not create a plan or modify code.
 
-This creates:
+### 3. Refine The Spec
 
-```text
-spec.md
-```
+Run `sdd-refine` with the playbook path. This updates `spec.md` using evidence from `research.md`.
 
-At this stage, `spec.md` is an intent-level spec. It should describe:
+The refined spec reconciles user intent with repository evidence. If research conflicts with the original intent, the conflict must be surfaced explicitly.
 
-- problem
-- goal
-- non-goals
-- users or consumers
-- desired behaviour
-- EARS requirements
-- acceptance scenarios
-- observability expectations
-- compatibility concerns
-- research questions
+### 4. Generate Delivery Artifacts
 
-`sdd-start` must not claim facts about the current codebase unless the user explicitly provided them.
-
-If current behaviour depends on repository inspection, the spec should say:
-
-```text
-Unknown. Must be discovered during /sdd-research.
-```
-
-### 2. Research the repository
-
-Run:
-
-```text
-/sdd-research doc/playbook/<feature>
-```
-
-This creates:
-
-```text
-research.md
-```
-
-`research.md` is the source of truth for repository evidence. It should record:
-
-- relevant files
-- current flows
-- existing tests
-- contracts and external interfaces
-- operational surfaces
-- risks
-- unknowns
-- planning inputs
-
-It must not create a plan or modify code.
-
-### 3. Refine the spec
-
-Run:
-
-```text
-/sdd-refine doc/playbook/<feature>
-```
-
-This updates `spec.md` using the evidence from `research.md`.
-
-After this step, `spec.md` becomes the planning-ready version.
-
-The refined spec should reconcile:
-
-```text
-user intent + repository evidence
-```
-
-If research conflicts with the original intent, the conflict must be surfaced explicitly. The spec must not silently change product intent just because the current code makes something easier.
-
-### 4. Generate delivery artifacts
-
-Run:
-
-```text
-/sdd-delivery-artifacts doc/playbook/<feature>
-```
-
-This creates:
-
-```text
-delivery_artifacts/*.md
-```
-
-`delivery_artifacts/` is a variable, feature-specific map of what must be produced or modified.
-
-It is not a fixed category list.
-
-Examples of valid delivery artifact files:
-
-```text
-delivery_artifacts/
-├── 01-api-contracts.md
-├── 02-domain-model.md
-├── 03-jobs-consumers.md
-└── 04-observability.md
-```
-
-or:
-
-```text
-delivery_artifacts/
-├── 01-grafana-dashboard.md
-├── 02-terraform-alerts.md
-└── 03-runbook.md
-```
-
-The actual files must be inferred from the feature.
+Run `sdd-delivery-artifacts` with the playbook path. This creates `delivery_artifacts/*.md`, a feature-specific map of what must be produced or modified.
 
 Tests are not delivery artifacts. Tests belong in the plan and task validation sections.
 
-### 5. Generate facts
+### 5. Generate Facts
 
-Run:
+Run `sdd-facts` with the playbook path. This creates `facts/*.md`, executable or verifiable assertions that prove the feature exists.
 
-```text
-/sdd-facts doc/playbook/<feature>
-```
+Facts should link back to requirements and eventually be proven by deterministic checks such as tests, contract checks, schema validation, smoke tests, static analysis, infrastructure validation, or CI jobs.
 
-This creates:
+### 6. Plan From Refined Inputs
 
-```text
-facts/*.md
-```
-
-Facts are executable or verifiable assertions.
-
-They exist because specs explain intent, but facts prove behaviour.
-
-A fact should link back to one or more `REQ-*` requirements and eventually be proven by a deterministic check, such as:
-
-- test
-- contract check
-- schema validation
-- smoke test
-- static analysis
-- infrastructure validation
-- CI job
-
-Facts help reviewers answer:
-
-```text
-Does this implementation actually prove the important behaviour, or does it merely look complete?
-```
-
-### 6. Plan from the refined inputs
-
-Invoke the `planner` agent only after these exist:
+Invoke the planner only after these exist:
 
 ```text
 spec.md
@@ -461,10 +272,7 @@ plan/t2.md
 ...
 ```
 
-The plan must cover:
-
-- every concrete artifact listed under `delivery_artifacts/*.md`
-- every `@spec` fact listed under `facts/*.md`
+The plan must cover every concrete artifact and every `@spec` fact.
 
 Each task should include:
 
@@ -475,39 +283,24 @@ Each task should include:
 - validation/tests
 - done criteria
 
-### 7. Execute the approved plan
+### 7. Execute The Approved Plan
 
-Run:
-
-```text
-/execute-plan doc/playbook/<feature>
-```
-
-Execution must follow the approved plan and modify only files allowed by the relevant task.
+Run `execute-plan` with the playbook path. Execution must follow the approved plan and modify only files allowed by the relevant task.
 
 Validation must use the applicable project, stack, and common rules.
 
-A task is not complete when code changes are implemented. A task is complete only when implementation, validation, and SDD tracking updates are all done.
+A task is complete only when implementation, validation, and SDD tracking updates are all done.
 
-After each verified task, `/execute-plan` must update the relevant tracking files when applicable:
+After each verified task, `execute-plan` must update the relevant tracking files when applicable:
 
 - `plan.md`
 - `plan/tN.md`
 - `delivery_artifacts/*.md`
 - `facts/*.md`
 
-### 8. Review the result
+### 8. Review The Result
 
-Invoke the `reviewer` agent.
-
-The review should check the diff against:
-
-- refined `spec.md`
-- `research.md`
-- `delivery_artifacts/*.md`
-- `facts/*.md`
-- `plan.md`
-- completed `plan/tN.md` tasks
+Invoke the reviewer agent. The review should check the diff against the refined spec, research, delivery artifacts, facts, plan, and completed task files.
 
 The reviewer should verify that:
 
@@ -515,9 +308,9 @@ The reviewer should verify that:
 - facts marked `@implemented` have executable checks that exist and passed
 - completed tasks match the actual diff
 
-### 9. Run the antagonist before PR
+### 9. Run The Antagonist Before PR
 
-Invoke the `antagonist` agent when the work is ready to become a PR.
+Invoke the antagonist agent when the work is ready to become a PR. It looks for blockers, hidden risks, weak validation, unsafe rollout, and scope creep.
 
 The antagonist is not a normal reviewer.
 
@@ -567,9 +360,9 @@ BLOCK | CAUTION | PASS
 
 The goal is to raise red flags before GitHub review, especially when AI-assisted implementation reduced the human owner's cognitive load.
 
-## EARS requirements in specs
+## EARS Requirements In Specs
 
-Specs should use EARS for behavioural requirements.
+Specs should use EARS for behavioral requirements.
 
 Each important requirement should:
 
@@ -599,7 +392,7 @@ REQ-002:
 When recording provider output metrics, the system shall not include user-level identifiers as metric labels.
 
 REQ-003:
-If the provider output attempt fails, then the system shall preserve the existing retry behaviour.
+If the provider output attempt fails, then the system shall preserve the existing retry behavior.
 ```
 
 Acceptance scenarios may use Given/When/Then, but they do not replace EARS requirements.
@@ -612,7 +405,7 @@ The short version:
 
 ```text
 Specs explain intent.
-Facts prove behaviour.
+Facts prove behavior.
 ```
 
 A fact should usually reference one or more `REQ-*` requirements.
@@ -632,11 +425,11 @@ Executable check:
 
 Facts should not be marked `@implemented` unless the executable check exists and passed.
 
-## SDD artifact responsibilities
+## SDD Artifact Responsibilities
 
 | Artifact | Responsibility |
 |----------|----------------|
-| `spec.md` | Behavioural source of truth |
+| `spec.md` | Behavioral source of truth |
 | `research.md` | Repository-evidence source of truth |
 | `delivery_artifacts/*.md` | Production-scope source of truth |
 | `facts/*.md` | Executable-verification source of truth |
@@ -644,46 +437,46 @@ Facts should not be marked `@implemented` unless the executable check exists and
 | `plan/tN.md` | Atomic task instructions |
 | tests/contracts/schemas/ADRs/dashboards/alerts/code | Permanent artifacts |
 
-## Example: using the full flow
+## Example: Using The Full Flow
 
 Imagine we want to add a small feature:
 
 ```text
-When a user receives a very boring notification, the system should add a tiny fun fact to make it less depressing.
+When a user receives a low-priority notification, the system should add a tiny fun fact to make it less depressing.
 ```
 
 Start with a rough prompt:
 
 ```text
-Help me write the specification for adding a tiny fun fact to boring notifications.
+Help me write the specification for adding a tiny fun fact to low-priority notifications.
 The goal is to make low-priority notifications feel a bit more human without changing critical or legal messages.
 ```
 
 Then run the flow:
 
 ```text
-/sdd-start doc/playbook/20260601_fun_fact_notifications
+sdd-start doc/playbook/20260601_fun_fact_notifications
 ```
 
-Claude should ask questions if the requirement is unclear, then create `spec.md`.
+The assistant should ask questions if the requirement is unclear, then create `spec.md`.
 
 Next:
 
 ```text
-/sdd-research doc/playbook/20260601_fun_fact_notifications
+sdd-research doc/playbook/20260601_fun_fact_notifications
 ```
 
 This checks the repo and answers questions like:
 
 - where notifications are built
 - whether notification priority already exists
-- whether legal/critical messages can be detected
+- whether legal or critical messages can be detected
 - where tests already live
 
 Then:
 
 ```text
-/sdd-refine doc/playbook/20260601_fun_fact_notifications
+sdd-refine doc/playbook/20260601_fun_fact_notifications
 ```
 
 This turns the original intent into a repo-aware spec.
@@ -691,7 +484,7 @@ This turns the original intent into a repo-aware spec.
 Then:
 
 ```text
-/sdd-delivery-artifacts doc/playbook/20260601_fun_fact_notifications
+sdd-delivery-artifacts doc/playbook/20260601_fun_fact_notifications
 ```
 
 This lists what must be produced, for example:
@@ -705,13 +498,13 @@ delivery_artifacts/
 Then:
 
 ```text
-/sdd-facts doc/playbook/20260601_fun_fact_notifications
+sdd-facts doc/playbook/20260601_fun_fact_notifications
 ```
 
 This defines what must be proven, for example:
 
 ```text
-FACT-001: boring low-priority notifications may receive a fun fact
+FACT-001: low-priority notifications may receive a fun fact
 FACT-002: critical/legal notifications must never receive a fun fact
 ```
 
@@ -734,7 +527,7 @@ plan/
 Then execute:
 
 ```text
-/execute-plan doc/playbook/20260601_fun_fact_notifications
+execute-plan doc/playbook/20260601_fun_fact_notifications
 ```
 
 After implementation, run the normal review:
@@ -758,7 +551,7 @@ BLOCK: The spec says legal notifications must never receive fun facts,
 but there is no fact proving that legal messages are excluded.
 ```
 
-That is the point of the workflow: not to generate more documents for fun, but to catch the thing we would otherwise miss.
+That is the point of the workflow: not to generate more documents for its own sake, but to catch the thing we would otherwise miss.
 
 ## References
 
@@ -767,10 +560,9 @@ This workflow was influenced by these articles on Spec-Driven Development and Fa
 - [Stop Writing Specs. Start Writing Facts. The Entire SDD Movement Is Already Obsolete](https://medium.com/@wasowski.jarek/stop-writing-specs-start-writing-facts-the-entire-sdd-movement-is-already-obsolete-9045f7061e26)
 - [Comparing 15 Spec-Driven Development Frameworks](https://medium.com/@wasowski.jarek/comparing-15-spec-driven-development-frameworks-sdd-c052df529274)
 
-## Based on
+## Based On
 
 Forked and adapted from:
 
 - [Karpathy's Claude.md](https://github.com/forrestchang/andrej-karpathy-skills/blob/main/CLAUDE.md)
 - [Everything-Claude-Code](https://github.com/affaan-m/everything-claude-code)
-

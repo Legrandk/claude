@@ -1,3 +1,10 @@
+---
+name: planner
+description: Converts approved SDD inputs into a deterministic implementation plan. Use after spec.md, research.md, delivery_artifacts/*.md, and facts/*.md exist.
+model: sonnet
+tools: Read, Glob, Grep, Bash, Write
+---
+
 # Planner SDD Addition
 
 Add this section to `agents/planner.md`.
@@ -105,4 +112,3 @@ Validation:
 - Run targeted test file.
 - Run linter.
 ```
-

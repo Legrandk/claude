@@ -1,0 +1,14 @@
+# OpenAI Codex configuration fragment for this repository.
+#
+# Codex reads user configuration from ~/.codex/config.toml and project
+# overrides from .codex/config.toml in trusted repositories.
+
+# Let Codex consume Claude-style project instructions when a repository has
+# CLAUDE.md but not AGENTS.md.
+project_doc_fallback_filenames = ["CLAUDE.md"]
+
+# Keep shared guidance and workflow docs from being truncated too aggressively.
+project_doc_max_bytes = 65536
+
+[features]
+multi_agent = true
