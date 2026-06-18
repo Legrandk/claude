@@ -35,6 +35,7 @@
     "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name'); used=$(echo \"$input\" | jq -r '.context_window.used_percentage // empty'); in_tok=$(echo \"$input\" | jq -r '.context_window.total_input_tokens // 0'); out_tok=$(echo \"$input\" | jq -r '.context_window.total_output_tokens // 0'); cwd=$(echo \"$input\" | jq -r '.workspace.current_dir'); branch=$(git -C \"$cwd\" --no-optional-locks rev-parse --abbrev-ref HEAD 2>/dev/null); ctx_part=\"\"; [ -n \"$used\" ] && ctx_part=\" | ctx: $(printf '%.0f' \"$used\")%\"; cost=$(awk -v i=\"$in_tok\" -v o=\"$out_tok\" 'BEGIN { c = (i * 3 / 1000000) + (o * 15 / 1000000); printf \"%.2f\", c }'); cost_part=\"\"; [ \"$(awk -v c=\"$cost\" 'BEGIN { print (c > 0) }')\" = \"1\" ] && cost_part=\" | ~\\$$cost\"; dir_part=\" | $cwd\"; branch_part=\"\"; [ -n \"$branch\" ] && branch_part=\" | $branch\"; printf '%s%s%s%s%s' \"$model\" \"$ctx_part\" \"$cost_part\" \"$dir_part\" \"$branch_part\""
   },
   "enabledPlugins": {
+    "acli@jt-marketplace-claude": true,
     "helm-repair@jt-marketplace-claude": true,
     "jt-clientgen@jt-marketplace-claude": true,
     "jt-dependabot@jt-marketplace-claude": true
