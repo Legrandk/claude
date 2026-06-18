@@ -139,6 +139,38 @@ Do not use subagents when one or two small files are enough.
 
 Do not use subagents while recovering from output-limit failures unless the user explicitly instructs it.
 
+### File-Size Threshold
+
+If a file exceeds ~200 lines or ~10KB, it MUST be read by a subagent — never inline in the main context.
+
+The subagent writes its findings to a `/tmp/` file and returns only the path and a short summary.
+
+Do not read large files inline even when the task feels quick. The threshold is hard.
+
+### Write-to-File Pattern
+
+When a subagent produces structured output (lists, diffs, counts, JSON), it must write results to a `/tmp/` file and return only a one-line summary (e.g. `"7 missing methods. Written to /tmp/diff.json"`).
+
+Never return the full payload as subagent output text.
+
+The main context then reads the `/tmp/` file directly with the Read tool.
+
+### No Dual Large-File Accumulation
+
+Never hold two large file contents in main context simultaneously.
+
+If a task requires comparing or diffing two large files, delegate the entire comparison to a subagent. The subagent reads both files, computes the delta, and writes results to `/tmp/`.
+
+### Subagent Output Cap
+
+Every subagent prompt must include an explicit output constraint:
+
+- `"Return under 50 words."` for simple confirmations
+- `"Return only: <specific field>."` for structured results
+- `"Write to /tmp/<file> and return only the path + count."` for data payloads
+
+A subagent without an output cap will expand its response until it hits the token limit.
+
 ## Tool Call Budget
 
 Tool call arguments count as model output.

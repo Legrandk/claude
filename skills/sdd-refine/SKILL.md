@@ -12,7 +12,7 @@ This skill turns `spec.md` v0 into `spec.md` v1.
 
 It must not plan implementation.
 It must not modify application code.
-It must not create `delivery_artifacts/`, `facts/`, or `plan.md`.
+It must not create `delivery_artifacts/`, `facts/`, `plan.md`, or `tasks/`.
 
 This skill is framework-agnostic.
 
@@ -50,13 +50,14 @@ If `research.md` is missing, stop and ask the user to run `/sdd-research` first.
 2. Read `research.md`
 3. Replace unknown current behaviour with researched current behaviour
 4. Update or clarify EARS requirements
-5. Add or update the Change Set
-6. Surface conflicts between intent and repo reality
-7. Detect architectural decisions (see ADR Detection below)
-8. Ask the user which decisions to record as ADRs
-9. Write confirmed ADRs to `docs/adr/`
-10. Keep unresolved questions as checkboxes
-11. Mark the spec as refined
+5. Preserve or update requirement-to-scenario links
+6. Add or update the Change Set
+7. Surface conflicts between intent and repo reality
+8. Detect architectural decisions (see ADR Detection below)
+9. Ask the user which decisions to record as ADRs
+10. Write confirmed ADRs to `<playbook-path>/doc/adr/`
+11. Keep unresolved questions as checkboxes
+12. Mark the spec as refined
 
 ## Refinement Rules
 
@@ -99,7 +100,7 @@ List each candidate decision in chat using this format:
 ```md
 ### Candidate ADRs
 
-1. [Short title] — chose X over Y because [brief reason] (linked: REQ-001)
+1. [Short title] - chose X over Y because [brief reason] (linked: REQ-001, SCN-001)
 2. [Short title] — ...
 ```
 
@@ -109,11 +110,11 @@ If no architectural decisions were detected, skip this step entirely and do not 
 
 ### Writing ADRs
 
-For each confirmed decision, write one ADR file to `docs/adr/NNNN-decision-title.md`.
+For each confirmed decision, write one ADR file to `<playbook-path>/doc/adr/NNNN-decision-title.md`.
 
-Scan existing files in `docs/adr/` to assign the next sequential number.
+Scan existing files in `<playbook-path>/doc/adr/` to assign the next sequential number.
 
-If `docs/adr/` does not exist, create it before writing.
+If `<playbook-path>/doc/adr/` does not exist, create it before writing.
 
 Use this format:
 
@@ -123,6 +124,10 @@ Use this format:
 **Date**: YYYY-MM-DD
 **Status**: accepted
 **Requirements**: REQ-XXX, REQ-YYY
+**Scenarios**: SCN-XXX
+**Delivery Artifacts**: TBD until `/sdd-delivery-artifacts`
+**Facts**: TBD until `/sdd-facts`
+**Tasks**: TBD until planning
 
 ## Context
 
@@ -147,9 +152,17 @@ Use this format:
 
 ### Negative
 - [trade-off]
+
+## Traceability
+
+- Requirements: `REQ-XXX`
+- Scenarios: `SCN-XXX`
+- Delivery Artifacts: `TBD until /sdd-delivery-artifacts`
+- Facts: `TBD until /sdd-facts`
+- Tasks: `TBD until planning`
 ```
 
-After writing each ADR, append a row to `docs/adr/README.md` (create it if missing):
+After writing each ADR, append a row to `<playbook-path>/doc/adr/README.md` (create it if missing):
 
 ```md
 | [NNNN](NNNN-decision-title.md) | [Title] | accepted | YYYY-MM-DD |
@@ -213,6 +226,14 @@ Split from: `REQ-002`
 ```
 
 If a requirement is removed, explain why.
+
+Preserve or update scenario links for every requirement:
+
+```md
+Scenarios:
+
+- `SCN-001`
+```
 
 Requirements must remain:
 

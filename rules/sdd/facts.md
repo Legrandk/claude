@@ -59,9 +59,27 @@ Requirements:
 
 - `REQ-001`
 
+Scenarios:
+
+- `SCN-001`
+
 Delivery Artifacts:
 
-- `delivery_artifacts/<file>.md` -> `<artifact heading>`
+- `DA-001` - `delivery_artifacts/<file>.md` -> `<artifact heading>`
+
+Tasks:
+
+- `TBD until planning`
+
+ADRs:
+
+- `ADR-NNNN` when applicable, otherwise `None`
+
+Traceability:
+
+- Requirements -> Scenarios -> Delivery Artifacts -> Facts -> Tasks
+- ADRs constrain this fact only when listed above.
+
 
 Executable Check:
 
@@ -125,5 +143,7 @@ Every non-trivial behavioural requirement should map to at least one fact unless
 Use lightweight traceability:
 
 ```txt
-REQ -> FACT -> TASK
+REQ -> SCN -> DA -> FACT -> TASK
 ```
+
+Use `ADR-NNNN` cross-links when an architectural decision constrains a fact.

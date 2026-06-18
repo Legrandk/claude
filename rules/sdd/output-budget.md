@@ -29,23 +29,23 @@ doc/playbook/<feature>/
   research.md
   design.md
   plan.md
-  plan/
-    t1.md
-    t2.md
-    t3.md
+  tasks/
+    TASK-001.md
+    TASK-002.md
+    TASK-003.md
     ...
 ```
 
 `plan.md` is the index and execution contract.
 
-`plan/tN.md` files are the executable task contracts.
+`tasks/TASK-001.md` files are the executable task contracts.
 
 If the plan is PR-based, task file names may use PR IDs only when the project already uses that convention, for example:
 
 ```text
-plan/
-  pr-1.md
-  pr-2.md
+tasks/
+  PR-1.md
+  PR-2.md
 ```
 
 Do not create only `plan.md` when the plan contains implementation tasks.
@@ -63,7 +63,7 @@ It may include:
 - rollback summary
 - human gates
 - task index
-- links to `plan/tN.md` files
+- links to `tasks/TASK-001.md` files
 
 It must not include detailed implementation instructions for each task.
 
@@ -73,39 +73,40 @@ If `plan.md` includes detailed per-file instructions, expected behavior, tests, 
 
 ## Required Task Files
 
-Every implementation task listed in `plan.md` must have a corresponding child file under `plan/`.
+Every implementation task listed in `plan.md` must have a corresponding child file under `tasks/`.
 
 Examples:
 
 ```text
-plan.md checklist item: T1 — Foundation dependencies and test helper
-required child file: plan/t1.md
+plan.md checklist item: TASK-001 - Foundation dependencies and test helper
+required child file: tasks/TASK-001.md
 ```
 
 or:
 
 ```text
-plan.md checklist item: PR-1 — Foundation dependencies and test helper
-required child file: plan/pr-1.md
+plan.md checklist item: PR-1 - Foundation dependencies and test helper
+required child file: tasks/PR-1.md
 ```
 
 The child file is mandatory even if the task seems simple.
 
 ## Task File Contract
 
-Each `plan/tN.md` file must be specific enough that an implementer can execute it without inventing scope.
+Each `tasks/TASK-001.md` file must be specific enough that an implementer can execute it without inventing scope.
 
 Each task file must include:
 
-1. **Goal** — what this task delivers.
-2. **Scope** — exact files expected to be modified, created, or deleted.
-3. **Out of scope** — explicit things not to touch.
-4. **Implementation steps** — small ordered steps.
-5. **Expected behavior** — observable behavior after the task.
-6. **Tests** — exact tests to add/update or exact reason no tests are needed.
-7. **Validation commands** — commands to run for this task.
-8. **Rollback notes** — how to revert this task safely.
-9. **Completion checklist** — small checkbox list.
+1. **Traceability** - linked `REQ-*`, `SCN-*`, `DA-*`, `FACT-*`, and `ADR-*` ids where applicable.
+2. **Goal** - what this task delivers.
+3. **Scope** - exact files expected to be modified, created, or deleted.
+4. **Out of scope** - explicit things not to touch.
+5. **Implementation steps** - small ordered steps.
+6. **Expected behavior** - observable behavior after the task.
+7. **Tests** - exact tests to add/update or exact reason no tests are needed.
+8. **Validation commands** - commands to run for this task.
+9. **Rollback notes** - how to revert this task safely.
+10. **Completion checklist** - small checkbox list.
 
 If a task file does not define exact files and expected behavior, it is not executable.
 
@@ -153,7 +154,7 @@ For SDD artifacts such as:
 - `research.md`
 - `design.md`
 - `plan.md`
-- `plan/tN.md`
+- `tasks/TASK-001.md`
 - `facts/*.md`
 - rollout docs
 - rollback docs
@@ -174,7 +175,7 @@ Create `plan.md` in small sections:
 
 Do not include task details in `plan.md`.
 
-### `plan/tN.md`
+### `tasks/TASK-001.md`
 
 Create each task file independently.
 
@@ -194,7 +195,7 @@ Do not do this:
 2. synthesize a full plan
 3. write a large `plan.md`
 4. put all implementation details inside `plan.md`
-5. skip `plan/tN.md` files
+5. skip `tasks/*.md` files
 6. summarize everything
 
 This pattern is both output-budget unsafe and execution unsafe.
@@ -244,7 +245,7 @@ If an output-limit error happens during SDD planning, the next assistant turn mu
 
 Recovery sequence:
 
-1. create or fix only the `plan/` directory
+1. create or fix only the `tasks/` directory
 2. ensure `plan.md` is compact and index-only
 3. create only one missing task file
 4. stop
@@ -264,7 +265,7 @@ After changing SDD files, respond with at most 20 words and only include:
 Example:
 
 ```md
-Updated `plan/t1.md`: task contract added. Next: create `plan/t2.md`.
+Updated `tasks/TASK-001.md`: task contract added. Next: create `tasks/TASK-002.md`.
 ```
 
 Never print generated SDD file contents unless explicitly requested.

@@ -16,6 +16,7 @@ Facts verify behaviour.
 This skill must not implement tests.
 This skill must not modify production code.
 This skill must not create `plan.md`.
+This skill must not create `tasks/`.
 
 This skill is framework-agnostic.
 
@@ -35,6 +36,7 @@ Read:
 - `<playbook-path>/spec.md`
 - `<playbook-path>/research.md`
 - every markdown file under `<playbook-path>/delivery_artifacts/`
+- referenced ADRs under `<playbook-path>/doc/adr/`, when present
 
 If `spec.md` is missing, stop and ask the user to run `/sdd-start` first.
 
@@ -114,9 +116,26 @@ Requirements:
 
 - `REQ-001`
 
+Scenarios:
+
+- `SCN-001`
+
 Delivery Artifacts:
 
-- `delivery_artifacts/<file>.md` -> `<artifact heading>`
+- `DA-001` - `delivery_artifacts/<file>.md` -> `<artifact heading>`
+
+Tasks:
+
+- `TBD until planning`
+
+ADRs:
+
+- `ADR-NNNN` when applicable, otherwise `None`
+
+Traceability:
+
+- Requirements -> Scenarios -> Delivery Artifacts -> Facts -> Tasks
+- ADRs constrain this fact only when listed above.
 
 Executable Check:
 
@@ -184,12 +203,12 @@ Every non-trivial behavioural requirement should map to at least one fact unless
 Use lightweight traceability:
 
 ```txt
-REQ -> FACT -> TASK
+REQ -> SCN -> DA -> FACT -> TASK
 ```
 
-This skill creates the `REQ -> FACT` link.
+This skill creates the `REQ/SCN/DA -> FACT` link.
 
-The planner will create the `FACT -> TASK` link.
+The planner will create the `FACT -> TASK` link and fill task references.
 
 ## Output Rules
 
@@ -199,4 +218,5 @@ Return only:
 - facts files created
 - number of facts
 - requirements without facts, if any
+- scenarios without facts, if any
 - next recommended command

@@ -13,7 +13,7 @@ This skill turns an unclear idea into a clear `spec.md` v0.
 It must not plan implementation.
 It must not inspect repository code.
 It must not modify application code.
-It must not create `research.md`, `delivery_artifacts/`, `facts/`, or `plan.md`.
+It must not create `research.md`, `delivery_artifacts/`, `facts/`, `plan.md`, or `tasks/`.
 
 This skill is framework-agnostic.
 
@@ -76,6 +76,7 @@ Extract:
 - non-goals
 - EARS requirements
 - acceptance scenarios
+- requirement-to-scenario traceability
 - edge cases
 - observability impact
 - compatibility impact
@@ -145,6 +146,7 @@ Do not create:
 - `delivery_artifacts/`
 - `facts/`
 - `plan.md`
+- `tasks/`
 - application code
 - tests
 - infrastructure files
@@ -179,6 +181,7 @@ Each requirement must:
 - use `shall`
 - be atomic
 - be testable or verifiable
+- be linked to at least one `SCN-*` acceptance scenario unless explicitly scenario-free
 - avoid implementation details unless explicitly required
 - avoid vague words like "properly", "fast", "easy", "robust", unless quantified
 
@@ -228,13 +231,35 @@ Unknown. Must be discovered during `/sdd-research`.
 
 When <trigger>, the system shall <response>.
 
+Scenarios:
+
+- `SCN-001`
+
 ### REQ-002
 
 The system shall <response>.
 
+Scenarios:
+
+- `SCN-002`
+
 ## Acceptance Scenarios
 
-### Scenario 1: <name>
+### SCN-001: <name>
+
+Covers:
+
+- `REQ-001`
+
+Given ...
+When ...
+Then ...
+
+### SCN-002: <name>
+
+Covers:
+
+- `REQ-002`
 
 Given ...
 When ...

@@ -21,8 +21,9 @@ Before executing, read:
 - `research.md`
 - `delivery_artifacts/*.md`
 - `facts/*.md`
+- `doc/adr/*.md`, when referenced
 - `plan.md`
-- the relevant `plan/tN.md` task file, if present
+- the relevant `tasks/TASK-001.md` task file, if present
 
 ## SDD Guardrails
 
@@ -36,6 +37,7 @@ Before execution, verify:
 - `plan.md` exists
 - the selected task is unchecked
 - the selected task has `Allowed Files`
+- the selected task has traceability links for applicable `REQ-*`, `SCN-*`, `DA-*`, `FACT-*`, and `ADR-*` ids
 
 Do not execute if the task requires architectural decisions not captured in an ADR or explicitly approved in the plan.
 
@@ -66,9 +68,10 @@ After completing a task:
 2. Mark delivered artifacts as `[x]` in `Delivery Checklist`.
 3. Mark implemented facts as `[x]` in `Facts Checklist`.
 4. Mark detailed artifact checkboxes inside `delivery_artifacts/*.md` when applicable.
-5. Mark facts as `@implemented` only when their executable check exists and passes.
-6. Do not mark a fact complete if it is merely planned.
-7. Do not mark a delivery artifact complete unless the corresponding output exists.
+5. Fill `Tasks:` links in related `facts/*.md` entries when the task implements them.
+6. Mark facts as `@implemented` only when their executable check exists and passes.
+7. Do not mark a fact complete if it is merely planned.
+8. Do not mark a delivery artifact complete unless the corresponding output exists.
 
 ## Done Criteria
 
