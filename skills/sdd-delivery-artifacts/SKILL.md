@@ -14,6 +14,7 @@ It must not include verification artifacts unless they are themselves the produc
 It must not include validation commands.
 It must not create `facts/`.
 It must not create `plan.md`.
+It must not create `tasks/`.
 It must not modify application code.
 
 This skill is framework-agnostic.
@@ -95,7 +96,15 @@ Why this delivery area exists for this feature.
 
 ## Artifacts
 
-### `<path-or-component-name>`
+### DA-001: `<path-or-component-name>`
+
+Traceability:
+
+- Requirements: `REQ-001`
+- Scenarios: `SCN-001`
+- Facts: `TBD until /sdd-facts`
+- Tasks: `TBD until planning`
+- ADRs: `ADR-NNNN` when applicable, otherwise `None`
 
 Produce:
 
@@ -123,7 +132,10 @@ Source:
 - Do not include framework-specific command details.
 - Mark expected non-changes explicitly when they prevent unnecessary work.
 - Avoid vague items like "update service" or "improve logic".
-- Link artifacts to requirements where possible.
+- Give each concrete artifact a stable `DA-*` id.
+- Link each artifact to requirements and scenarios.
+- Link each artifact to ADRs when an architectural decision constrains it.
+- Leave facts and tasks as `TBD` until those artifacts are generated.
 
 ## Output Rules
 

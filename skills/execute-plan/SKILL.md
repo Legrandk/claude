@@ -101,7 +101,7 @@ A task is complete only when all required completion gates pass:
 1. Implementation done.
 2. Validation passed.
 3. `plan.md` task checkbox updated.
-4. Related `plan/tN.md` `Done When` checkboxes updated.
+4. Related `tasks/TASK-001.md` `Done When` checkboxes updated.
 5. Related `delivery_artifacts/*.md` checkboxes updated.
 6. Related `facts/*.md` statuses updated.
 
@@ -121,7 +121,7 @@ After validation passes for a task, immediately update tracking files one by one
 - Mark related delivery checklist items as `[x]` only if actually produced.
 - Mark related facts checklist items as `[x]` only if their executable checks exist and passed.
 
-### `plan/tN.md`
+### `tasks/TASK-001.md`
 
 - Mark completed `Done When` items as `[x]`.
 - Leave incomplete items unchecked.
@@ -133,6 +133,8 @@ After validation passes for a task, immediately update tracking files one by one
 - Do not mark planned-only artifacts as complete.
 
 ### `facts/*.md`
+
+Add the executed task id under `Tasks:` for each related fact.
 
 Change fact status from `@spec` to `@implemented` only when:
 
@@ -155,7 +157,7 @@ Use `@deferred` only when explicitly approved.
 - Update SDD tracking files immediately after each task is verified.
 - Do not batch tracking updates at the end of the whole plan.
 - At minimum, mark the task as `[x]` in `plan.md`.
-- When applicable, also update `plan/tN.md`, `delivery_artifacts/*.md`, and `facts/*.md`.
+- When applicable, also update `tasks/*.md`, `delivery_artifacts/*.md`, and `facts/*.md`.
 - Do not mark delivery artifacts or facts complete unless they were actually produced and verified.
 - Parallel tasks must be launched in a **single** Agent tool call.
 
@@ -166,6 +168,7 @@ Before execution, if the plan lives under `doc/playbook/<feature>/`:
 - Verify `spec.md` exists
 - Verify `research.md` exists
 - Verify every unchecked task points to a task file or contains explicit file scope
+- Verify every unchecked task links applicable `REQ-*`, `SCN-*`, `DA-*`, `FACT-*`, and `ADR-*` ids
 - Refuse to execute if the plan requires architectural decisions not captured in an ADR or explicitly approved in the plan
 
 ## Done Criteria
@@ -176,7 +179,7 @@ A task is done only when:
 - implementation is complete
 - required validation passed
 - `plan.md` is updated
-- related `plan/tN.md` is updated when applicable
+- related `tasks/*.md` is updated when applicable
 - related `delivery_artifacts/*.md` files are updated when applicable
 - related `facts/*.md` files are updated when applicable
 - no out-of-scope files were modified

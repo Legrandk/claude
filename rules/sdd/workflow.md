@@ -11,6 +11,7 @@ For non-trivial feature work, follow this sequence:
 1. `/sdd-start`
    - Produces `spec.md` v0.
    - Captures intent, scope, non-goals, EARS requirements, acceptance scenarios, SDD rigor level, and research questions.
+   - Assigns stable requirement ids (`REQ-001`) and scenario ids (`SCN-001`) and links scenarios to requirements.
    - Uses `AskUserQuestionTool` to resolve blocking ambiguities before writing `spec.md`.
    - Must not inspect or claim repository facts unless provided by the user.
 
@@ -26,7 +27,7 @@ For non-trivial feature work, follow this sequence:
    - Adds or updates the Change Set: Added / Modified / Removed / Unchanged.
    - Must surface conflicts instead of silently changing the intent.
    - Detects architectural decisions and asks the user which to record as ADRs.
-   - Writes confirmed ADRs to `docs/adr/` (optional at L1+, required at L2).
+   - Writes confirmed ADRs to `<playbook-path>/doc/adr/` (optional at L1+, required at L2).
 
 4. `/sdd-delivery-artifacts`
    - Produces `delivery_artifacts/*.md`.
@@ -41,7 +42,7 @@ For non-trivial feature work, follow this sequence:
    - Must not implement tests or production code.
 
 6. `planner`
-   - Produces a compact `plan.md` index and detailed `plan/tN.md` task files.
+   - Produces a compact `plan.md` index and detailed `tasks/TASK-001.md` task files.
    - Plans from the refined `spec.md`, `research.md`, `delivery_artifacts/*.md`, and `facts/*.md`.
    - Must not plan from `spec.md` v0 if `research.md` exists and refinement has not happened.
    - Must not create a monolithic `plan.md` with all task details inline.
@@ -54,7 +55,7 @@ For non-trivial feature work, follow this sequence:
    - Must update task, delivery, and facts checklists.
 
 8. `reviewer`
-   - Reviews the diff against `spec.md`, `research.md`, `delivery_artifacts/*.md`, `facts/*.md`, and `plan.md`.
+   - Reviews the diff against `spec.md`, `research.md`, `delivery_artifacts/*.md`, `facts/*.md`, `plan.md`, `tasks/*.md`, and referenced ADRs.
 
 ## SDD Rigor Levels
 
@@ -109,7 +110,7 @@ Required:
 
 - everything from L1+
 - ADRs produced by `/sdd-refine` for all architectural decisions
-- stricter traceability from `REQ -> FACT -> TASK`
+- stricter traceability from `REQ -> SCN -> DA -> FACT -> TASK`, with ADR cross-links when decisions exist
 - explicit security/privacy/rollout review where relevant
 
 ### L3 Spec-as-Source
@@ -125,7 +126,7 @@ Only use if the project explicitly adopts code generation from specs.
 - `delivery_artifacts/*.md` is the production-scope source of truth.
 - `facts/*.md` is the executable-verification source of truth.
 - `plan.md` is the execution source of truth.
-- `plan/tN.md` files are the atomic task instructions.
+- `tasks/TASK-001.md` files are the atomic task instructions.
 - Tests, contracts, schemas, ADRs, dashboards, alerts, and code are the permanent artifacts.
 
 ## Repository Knowledge Boundary
@@ -156,6 +157,10 @@ Preferred EARS patterns:
 - Unwanted behaviour: `If <unwanted event>, then the system shall <response>.`
 
 Acceptance scenarios may use Given/When/Then, but they do not replace EARS requirements.
+
+Acceptance scenarios must use stable scenario ids: `SCN-001`, `SCN-002`, ...
+
+Each scenario must list the requirement ids it covers.
 
 ## Refinement Rule
 
@@ -199,6 +204,10 @@ The actual files must be inferred from the feature.
 
 Delivery artifacts must use checkboxes for concrete outputs so completion can be tracked.
 
+Each concrete delivery artifact must have a stable id: `DA-001`, `DA-002`, ...
+
+Each delivery artifact must link to relevant requirements, scenarios, facts when known, tasks when planned, and ADRs when applicable.
+
 Tests are not delivery artifacts.
 
 ## Facts Rule
@@ -215,24 +224,30 @@ Facts must define:
 - stable id: `FACT-001`, `FACT-002`, ...
 - status: `@draft`, `@spec`, `@implemented`, or `@deferred`
 - linked requirement ids
+- linked scenario ids
+- linked delivery artifact ids
+- linked ADR ids when applicable
+- linked task ids once planned, or `TBD until planning`
 - executable check command, when known
 - assertion
 - implementation target, when known
 
 ## Traceability Rule
 
-For L1+ and L2 work, use lightweight traceability:
+For L1+ and L2 work, use lightweight traceability across generated artifacts:
 
 ```txt
-REQ -> FACT -> TASK
+REQ -> SCN -> DA -> FACT -> TASK
 ```
 
-Do not create heavy enterprise matrices unless explicitly requested.
+Use `ADR-NNNN` cross-links wherever an architectural decision constrains a requirement, scenario, delivery artifact, fact, or task.
+
+Do not create heavy enterprise matrices unless explicitly requested. Prefer short `Traceability` sections in each artifact.
 
 The planner must ensure that:
 
 - every `@spec` fact is implemented or explicitly deferred
-- every implementation task references delivery artifacts and/or facts
+- every implementation task references requirements, scenarios, delivery artifacts, facts, and ADRs when applicable
 - every non-trivial requirement is covered by at least one fact or explicit deferral
 
 ## Tests Rule
@@ -243,7 +258,7 @@ Tests belong in:
 
 - `facts/*.md`
 - `plan.md`
-- `plan/tN.md`
+- `tasks/*.md`
 - validation sections
 - implementation requirements
 
@@ -271,7 +286,7 @@ When planning under `doc/playbook/<feature>/`, the planner must read:
 - `research.md`
 - every markdown file under `delivery_artifacts/`
 - every markdown file under `facts/`
-- referenced ADRs
+- referenced ADRs under `doc/adr/`
 - relevant rules
 - `rules/common/output-budget.md`
 
@@ -284,22 +299,27 @@ Every concrete artifact listed under `delivery_artifacts/*.md` must be covered b
 - Task Checklist
 - Delivery Checklist
 - Facts Checklist
+- Traceability summary
 - Validation summary
-- Task index pointing to `plan/tN.md`
+- Task index pointing to `tasks/TASK-001.md`
 
 Detailed task instructions must live in separate task files:
 
 ```txt
-plan/
-  t1.md
-  t2.md
-  t3.md
+tasks/
+  TASK-001.md
+  TASK-002.md
+  TASK-003.md
 ```
 
-Each `plan/tN.md` task file must include:
+Each `tasks/TASK-001.md` task file must include:
 
+- `Traceability`
+- `Requirements`
+- `Scenarios`
 - `Delivers`
 - `Implements Facts`
+- `ADRs`
 - `Allowed Files`
 - `Validation`
 - `Done When`

@@ -49,7 +49,8 @@ If `spec.md` is missing, stop and ask the user to run `/sdd-start` first.
 4. Record concrete evidence
 5. Write `<playbook-path>/research.md`
 6. Do not create `plan.md`
-7. Do not modify code
+7. Do not create `tasks/`
+8. Do not modify code
 
 ## research.md Structure
 
@@ -66,6 +67,14 @@ If `spec.md` is missing, stop and ask the user to run `/sdd-start` first.
 
 ### Question
 
+Linked Requirements:
+
+- `REQ-001`
+
+Linked Scenarios:
+
+- `SCN-001`
+
 Answer:
 
 Evidence:
@@ -74,7 +83,7 @@ Evidence:
 
 ## Relevant Files
 
-- `path`: why it matters
+- `path`: why it matters; links: `REQ-001`, `SCN-001`
 
 ## Current Flow
 
@@ -109,6 +118,10 @@ Questions that remain unresolved after repository inspection.
 ## Planning Inputs
 
 Concrete facts the planner must use.
+
+Include traceability inputs:
+
+- `REQ-001` / `SCN-001`: repository evidence, constraints, risks, and referenced `ADR-NNNN` ids when applicable
 ```
 
 ## Evidence Rules
@@ -125,6 +138,8 @@ Prefer:
 - infrastructure files
 - config files
 - ADRs
+
+Every research finding that materially affects the feature should list the relevant `REQ-*` and `SCN-*` ids.
 
 Do not invent current behaviour.
 
