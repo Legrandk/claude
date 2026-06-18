@@ -54,8 +54,22 @@ For non-trivial feature work, follow this sequence:
    - Must validate through project-aware commands.
    - Must update task, delivery, and facts checklists.
 
-8. `reviewer`
-   - Reviews the diff against `spec.md`, `research.md`, `delivery_artifacts/*.md`, `facts/*.md`, `plan.md`, `tasks/*.md`, and referenced ADRs.
+8. `sdd-judge`
+   - Final acceptance judge. Runs after `/execute-plan` is complete.
+   - Decides whether the work fully satisfies the spec, facts, delivery artifacts, and plan.
+   - Read-only; does not implement.
+   - Must pass before continuing.
+
+9. `sdd-mutation-test`
+   - Runs scoped mutation testing against the implemented facts.
+   - Delegates surviving mutants to `tdd-guide` for test-first fixes.
+   - Repeats until no mutation issues remain.
+   - Must run after `sdd-judge` passes.
+
+10. `antagonist`
+    - Challenges the implementation by looking for blockers, hidden risks, unsafe assumptions, missing validation, rollout hazards, and scope creep.
+    - Read-only; does not implement.
+    - Must run after `sdd-mutation-test` passes and before committing to git.
 
 ## SDD Rigor Levels
 
